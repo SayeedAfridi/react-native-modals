@@ -15,6 +15,7 @@ type Props = {
   onSwipeOut?: (event: DragEvent) => void;
   swipeThreshold?: number;
   swipeDirection?: SwipeDirection | Array<SwipeDirection>;
+  propagateSwipe?: boolean;
   children: ({
     onLayout: (event: ViewLayoutEvent) => void;
     pan: Animated.ValueXY;
@@ -24,16 +25,17 @@ type Props = {
 export default class DraggableView extends Component<Props> {
   static defaultProps = {
     style: null,
-    onMove: () => {},
-    onSwiping: () => {},
-    onSwipingOut: () => {},
+    onMove: () => { },
+    onSwiping: () => { },
+    onSwipingOut: () => { },
     onSwipeOut: null,
-    onRelease: () => {},
+    onRelease: () => { },
     swipeThreshold: 100,
     swipeDirection: [],
+    propagateSwipe: false,
   };
 
-  constructor(props: Props) {
+  constructor (props: Props) {
     super(props);
 
     this.pan = new Animated.ValueXY();
@@ -145,7 +147,7 @@ export default class DraggableView extends Component<Props> {
     onPanResponderMove: (event, gestureState) => {
       const isVerticalSwipe = d => ['up', 'down'].includes(d);
       const isHorizontalSwipe = d => ['left', 'right'].includes(d);
-      
+
       const newSwipeDirection = this.getSwipeDirection(gestureState);
       const isSameDirection =
         isVerticalSwipe(this.currentSwipeDirection) === isVerticalSwipe(newSwipeDirection) ||
@@ -161,7 +163,7 @@ export default class DraggableView extends Component<Props> {
         } else if (isHorizontalSwipe(this.currentSwipeDirection)) {
           animEvent = { dx: this.pan.x };
         }
-        Animated.event([null, animEvent], {useNativeDriver: false})(event, gestureState);
+        Animated.event([null, animEvent], { useNativeDriver: false })(event, gestureState);
         this.props.onSwiping(this.createDragEvent({
           x: this.pan.x._value,
           y: this.pan.y._value,
@@ -206,7 +208,7 @@ export default class DraggableView extends Component<Props> {
   });
 
   render() {
-    const { style, children: renderContent } = this.props;
+    const { style, children: renderContent, propagateSwipe } = this.props;
     const content = renderContent({
       pan: this.pan,
       onLayout: this.onLayout,
@@ -214,7 +216,7 @@ export default class DraggableView extends Component<Props> {
 
     return (
       <Animated.View
-        {...this.panResponder.panHandlers}
+        {...(propagateSwipe ? {} : this.panResponder.panHandlers)}
         style={style}
       >
         {content}

@@ -215,6 +215,7 @@ class BaseModal extends Component<ModalProps, State> {
       onSwipeOut,
       swipeDirection,
       swipeThreshold,
+      propagateSwipe,
     } = this.props;
 
     const overlayVisible = hasOverlay && [MODAL_OPENING, MODAL_OPENED].includes(modalState);
@@ -238,6 +239,7 @@ class BaseModal extends Component<ModalProps, State> {
             onSwipeOut={onSwipeOut}
             swipeDirection={swipeDirection}
             swipeThreshold={swipeThreshold}
+            propagateSwipe={propagateSwipe}
           >
             {({ pan, onLayout }) => (
               <Fragment>

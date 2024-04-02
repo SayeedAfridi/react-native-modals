@@ -46,6 +46,7 @@ export type ModalProps = {
   swipeDirection?: SwipeDirection | Array<SwipeDirection>;
   swipeThreshold?: number;
   useNativeDriver?: boolean;
+  propagateSwipe?: boolean;
 }
 
 export type ModalFooterProps = {
